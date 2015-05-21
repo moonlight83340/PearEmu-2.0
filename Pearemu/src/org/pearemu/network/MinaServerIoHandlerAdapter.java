@@ -40,6 +40,7 @@ public class MinaServerIoHandlerAdapter extends IoHandlerAdapter{
     @Override
     public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
        System.out.println( "IDLE " + session.getIdleCount( status ));
+       session.close(true);
     }
     
 }
