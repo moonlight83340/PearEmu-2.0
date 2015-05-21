@@ -17,9 +17,9 @@ import org.pearemu.network.MinaServer;
 public class MinaRealm {
     public MinaRealm(){
         try{
-            System.out.println("Démarrage du serveur...");
+            System.out.println("Lancement du Serveur...");
             MinaServer server = new MinaServer(Config.REALM_PORT);
-            System.out.println("Démarrage OK !");
+            System.out.println("OK !");
         }
         catch(IOException e){
             System.out.println("Impossible d'accèder au serveur, au port : " + Config.REALM_PORT);

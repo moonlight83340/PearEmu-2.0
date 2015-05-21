@@ -15,7 +15,7 @@ import org.pearemu.network.realm.MinaRealm;
  */
 public class Pearemu {
     public static void main(String[] args) throws IOException {
-            System.out.println("Lancement du realm...");
+            System.out.println("Pearemu 2.0.1");
             MinaRealm server = new MinaRealm();
 	}
 }

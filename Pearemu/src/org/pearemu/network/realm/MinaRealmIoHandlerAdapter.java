@@ -9,46 +9,63 @@ package org.pearemu.network.realm;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.pearemu.commons.utils.Constants;
+import org.pearemu.commons.utils.StringTools;
 
 /**
  *
  * @author moonlight83340
  */
 public class MinaRealmIoHandlerAdapter extends IoHandlerAdapter{
-
-    @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        super.messageSent(session, message); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
+     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-        super.messageReceived(session, message); //To change body of generated methods, choose Tools | Templates.
+       System.out.println("Received << " + (String)message);
+       String packet = ((String)message).trim();
+       
+       if (packet.length() == 0)
+           return;
+       
+       System.out.println("Received << " + packet);
+       int  numPacket = session.containsAttribute(1) ? (int)session.getAttribute(1) : 1;
+        
+        switch(numPacket){
+            case 1 : 
+                if(!packet.equals(Constants.DOFUS_VER)){
+                    MinaRealmPacketEnum.REQUIRE_VERSION.send(session);
+                    session.close(true);
+                }
+            break;  
+        }
+        session.setAttribute(1,numPacket+1);
     }
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-        super.exceptionCaught(session, cause); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(cause.getMessage());
+          session.close(true);
     }
 
     @Override
-    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-        super.sessionIdle(session, status); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void sessionClosed(IoSession session) throws Exception {
-        super.sessionClosed(session); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void sessionOpened(IoSession session) throws Exception {
-        super.sessionOpened(session); //To change body of generated methods, choose Tools | Templates.
+    public void messageSent(IoSession session, Object message) throws Exception {
+        System.out.println("Sent >> " + (String)message);
     }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        super.sessionCreated(session); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("New session created");
+    }
+ 
+    @Override
+    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
+       System.out.println( "IDLE " + session.getIdleCount( status ));
+       session.close(true);
+    }
+
+    @Override
+    public void sessionClosed(IoSession session) throws Exception {
+        super.sessionClosed(session);
+        System.out.println("Logout");
+        MinaRealmPacketEnum.HELLO_CONNECTION.send(session, StringTools.strRand(32));
     }
     
 }
