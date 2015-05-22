@@ -47,12 +47,14 @@ public class MinaRealmIoHandlerAdapter extends IoHandlerAdapter{
 
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
+        super.messageSent(session, message);
         System.out.println("Sent >> " + (String)message);
     }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
         System.out.println("New session created");
+        MinaRealmPacketEnum.HELLO_CONNECTION.send(session, StringTools.strRand(32));
     }
  
     @Override
@@ -65,7 +67,6 @@ public class MinaRealmIoHandlerAdapter extends IoHandlerAdapter{
     public void sessionClosed(IoSession session) throws Exception {
         super.sessionClosed(session);
         System.out.println("Logout");
-        MinaRealmPacketEnum.HELLO_CONNECTION.send(session, StringTools.strRand(32));
     }
     
 }
